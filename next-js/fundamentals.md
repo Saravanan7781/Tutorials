@@ -258,3 +258,83 @@ layout.tsx → shared UI wrapper.
 
 _folder → private, not routed.
 ```
+
+### Metadata
+
+- Metadata in Next.js is crucial for optimizing your web application's Search Engine Optimization (SEO) and improving its shareability on social media platforms. It refers to the data that provides information about other data, specifically about your web pages, and is primarily placed within the <head> section of your HTML.
+
+- Metadata in Next.js is crucial for optimizing your web application's Search Engine Optimization (SEO) and improving its shareability on social media platforms. It refers to the data that provides information about other data, specifically about your web pages, and is primarily placed within the <head> section of your HTML.
+
+- Here's a clear breakdown of metadata in Next.js:
+
+- What is Metadata and Why is it Important?
+- Definition: Metadata on a website is invisible data that describes the content of a page. It's not directly displayed to users but is used by browsers, search engines, and social media platforms.
+
+#### Key Uses:
+
+- SEO (Search Engine Optimization): Search engines use metadata (like title, description, and keywords) to understand the content and relevance of your pages, which directly impacts your website's ranking in search results. Well-defined metadata increases the likelihood of your site appearing for relevant queries.
+
+- Social Media Sharing (Open Graph): Platforms like Facebook, Twitter, and LinkedIn use Open Graph (OG) metadata to display rich, stylized cards when your links are shared. This includes things like the title, description, and a preview image, making your shared content more appealing and informative.
+
+- Content Discovery: Accurate metadata helps users and automated systems discover content that matches their interests.
+
+- User Experience: Clear and descriptive titles and descriptions in search results help users quickly understand what your page is about, leading to better engagement and lower bounce rates.
+
+### How Next.js Handles Metadata
+- Next.js provides a powerful Metadata API within its App Router to manage application metadata. There are two primary ways to add metadata:
+
+- Config-based Metadata:
+
+- Static Metadata: You can export a metadata object directly from a layout.js or page.js file. This is suitable for metadata that remains constant across sessions or for a group of pages.
+
+```
+// app/layout.tsx (Root Layout)
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'My Awesome Website',
+  description: 'A brief description of my awesome website.',
+  applicationName: 'My App',
+  authors: [{ name: 'John Doe' }],
+  keywords: ['nextjs', 'react', 'web development'],
+  // ... more metadata fields
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+- Dynamic Metadata (generateMetadata function):
+- For cases where metadata needs to be generated based on dynamic values (e.g., from an API call, route parameters, or specific page content), you can export an async function called generateMetadata from a layout.js or page.js file. Next.js will wait for this function to complete before streaming the UI, ensuring the <head> tags are included early.
+
+```
+import { Metadata } from 'next';
+
+type Props = {
+  params: Promise<{ productId: string }>;
+};
+
+export const generateMetadata = async ({
+  params,
+}: Props): Promise<Metadata> => {
+  const id = (await params).productId;
+  return {
+    title: `Product number ${id}`,
+  };
+};
+
+export default async function ProductId({ params }: Props) {
+  const { productId } = await params;
+  return (
+    <div>
+      <h1>Welcome to Product {productId}</h1>
+    </div>
+  );
+}
+
+```
